@@ -18,7 +18,9 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 // timer java : var startCountdown =setInterval(countdown, 1000) and clearInterval(startCountdown)
 // execute after a delay of 2 sec : setTimeout(sayHello, 2000)
 // more on timer , video 4.1.7
-buttonEl.addEventListener("click", function() {
+// buttonEl.addEventListener("click", function() {
+
+var createTaskHandler = function() {   
     // creating a new list item. 
     var listItemEl = document.createElement("li");
     // dynamic styling . assign this class to the task item with the property className
@@ -27,19 +29,9 @@ buttonEl.addEventListener("click", function() {
     listItemEl.textContent = "This is a new task.";
     // to attach the task item as a child to the list
     tasksToDoEl.appendChild(listItemEl);
-  });
+};
 
-// creating a new list item
-var taskItemEl = document.createElement("li");
-// giving the list item text of hello
-
-taskItemEl.textContent = "hello";
-taskItemEl;
-// adding this element to the ul 
-
-
-// to append the task item as a child to the list
-tasksToDoEl.appendChild(taskItemEl);
-
-// 
-taskItemEl.className = "task-item";
+// the createtakehandler should be before the below because we d be calling the function
+// before we defined it
+// the function below use createtaskhandler as the callback function
+buttonEl.addEventListener("click", createTaskHandler);
