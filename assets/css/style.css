@@ -42,6 +42,7 @@ form {
   display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
+  
 }
 
 form input {
@@ -57,6 +58,7 @@ form input {
 form .form-group {
   margin: 10px 6px 10px 0;
   flex: 1;
+  
 }
 
 footer {
@@ -178,6 +180,7 @@ footer {
   border-radius: 12px;
   -moz-appearance: none;
   -webkit-appearance: none;
+  /* appearance is key to styling the dropdown  */
   appearance: none;
   background-color: #fff;
   background-image: url("../images/select-arrow.svg");
