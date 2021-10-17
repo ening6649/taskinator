@@ -5,6 +5,9 @@
 // document.querySelector("button").textContent; selects "add task"
 // document.querySelector("#save-task"); selects the id save-task
 
+// give each new task a unique id by counting tasks
+var taskIdCounter = 0;
+
 // assign the button element object representation to a variable in the file
 // the EL suffix identifies this as a dom element. camelCase marks the element as a java variable
 // var buttonEl = document.querySelector("#save-task");
@@ -20,6 +23,9 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 // execute after a delay of 2 sec : setTimeout(sayHello, 2000)
 // more on timer , video 4.1.7
 // buttonEl.addEventListener("click", function() {
+
+
+var pageContentEl = document.querySelector("#page-content");
 
 // by passing the event argument to the taskFormHandler() function , we can use the data and funcitonalilty that object holds
 var taskFormHandler = function(event) {   
@@ -72,6 +78,10 @@ var createTaskEl = function (taskDataObj) {
     var listItemEl = document.createElement("li");
     listItemEl.className = "task-item";
 
+     // add task id as a custom attribute
+    listItemEl.setAttribute("data-task-id", taskIdCounter);
+
+
     // create div to hold task info and add to list item
     var taskInfoEl = document.createElement("div");
     taskInfoEl.className = "task-info";
@@ -79,10 +89,118 @@ var createTaskEl = function (taskDataObj) {
 
     listItemEl.appendChild(taskInfoEl);
 
+    // use taskIdCounter as the argument to create buttons that corresponds to the current task id
+    // createTaskAction() returns a DOM element , we store it in taskActionsEl
+    var taskActionsEl = createTaskActions(taskIdCounter);
+    console.log(taskActionsEl);
+    // append taskActionsEl to listItemEl before listItemEl is appended to the page
+    listItemEl.appendChild(taskActionsEl);
     // add entire list item to list
     tasksToDoEl.appendChild(listItemEl);
+
+    // increase task counter for next unique id
+    taskIdCounter++;
 }
 
+// create form elements dynamically because tasks are dynamically created
+var createTaskActions = function(taskId) {
+    // creates a new div element with the class name task actions
+    var actionContainerEl = document.createElement("div");
+    actionContainerEl.className = "task-actions";
+    // create edit button
+    var editButtonEl = document.createElement("button");
+    editButtonEl.textContent = "Edit";
+    editButtonEl.className = "btn edit-btn";
+    editButtonEl.setAttribute("data-task-id", taskId);
+    // adds the above button to the div 
+    actionContainerEl.appendChild(editButtonEl);
+
+    // create delete button
+    var deleteButtonEl = document.createElement("button");
+    deleteButtonEl.textContent = "Delete";
+    deleteButtonEl.className = "btn delete-btn";
+    deleteButtonEl.setAttribute("data-task-id", taskId);
+
+    actionContainerEl.appendChild(deleteButtonEl);
+
+    // add an empty select element to the div 
+    var statusSelectEl = document.createElement("select");
+    statusSelectEl.className = "select-status";
+    statusSelectEl.setAttribute("name", "status-change");
+    statusSelectEl.setAttribute("data-task-id", taskId);
+
+    var statusChoices = ["To Do", "In Progress", "Completed"];
+    for (var i = 0; i < statusChoices.length; i++) {
+        // create option element
+        var statusOptionEl = document.createElement("option");
+        statusOptionEl.textContent = statusChoices[i];
+        statusOptionEl.setAttribute("value", statusChoices[i]);
+      
+        // append to select
+        statusSelectEl.appendChild(statusOptionEl);
+      }
+
+    actionContainerEl.appendChild(statusSelectEl);
+
+    return actionContainerEl;
+};
+
+
+var taskButtonHandler = function(event) {
+     // get target element from event
+    var targetEl = event.target;
+    console.log(event.target);
+
+    // edit button was clicked
+    if (targetEl.matches(".edit-btn")) {
+        var taskId = targetEl.getAttribute("data-task-id");
+        editTask(taskId);
+    } 
+    // the matches()method is similar to querySelector()method except it doesnt find and retrun an element, it returns true. 
+    else if (targetEl.matches(".delete-btn")) {
+        console.log("you clicked a delete button!");
+         // get the element's task id 
+        var taskId = targetEl.getAttribute("data-task-id");
+        console.log(taskId);
+        // captures the id of the task we want to delete
+        deleteTask(taskId);
+    }
+};
+
+var editTask = function(taskId) {
+    console.log("editing task #" + taskId);
+  
+    // get task list item element
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    // get content from task name and type
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+    console.log(taskName);
+    // document.queryselector searches within the document element. the below searched witin taskSelected element
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+    console.log(taskType);
+    // use the selectors from before to update the form
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+    // update the text of the submit button to say "save task"
+    document.querySelector("#save-task").textContent = "Save Task";
+    // add taskID to a data-task-id attribute on the form itself. will use later to save the correct task
+    formEl.setAttribute("data-task-id", taskId);
+
+};
+  
+
+
+var deleteTask = function(taskId) {
+    console.log(taskId);
+    // selecting a list item use .task-item
+    // no space between task-item and data-task-id means both properties must be on the same element
+    // a space would look for an element with data-task-id inside a .task-item element
+    // more 4.3.7
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    console.log(taskSelected);
+    taskSelected.remove();
+    
+  };
 // the createtakehandler should be before the below because we d be calling the function
 // before we defined it
 // the function below use TaskfromHandler as the callback function
@@ -91,6 +209,7 @@ var createTaskEl = function (taskDataObj) {
 // a value of submit, and when a user presses Enter on the keyboard
 // Keeping a click event would trigger everytime the form is clicked
 formEl.addEventListener("submit", taskFormHandler);
+pageContentEl.addEventListener("click", taskButtonHandler);
 
 // event.preventdefault() prevents the page from refreshing when a button is clicked. 
 // The common verb that's used for retrieving or reading data from an object's property is getting. 
