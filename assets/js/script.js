@@ -24,12 +24,26 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 // by passing the event argument to the createTaskHandler() function , we can use the data and funcitonalilty that object holds
 var createTaskHandler = function(event) {   
     event.preventDefault();
+    // single '' should be used inside a "" because otherwise the double quote would end early 
+    var taskNameInput = document.querySelector("input[name='task-name']").value;
+    var taskTypeInput = document.querySelector("select[name='task-type']").value;
+    // console.dir(taskNameInput);
     // creating a new list item. 
     var listItemEl = document.createElement("li");
     // dynamic styling . assign this class to the task item with the property className
     listItemEl.className = "task-item";
+    // create div to hold task info and add to list item
+    var taskInfoEl = document.createElement("div");
+    // give it a class name
+    taskInfoEl.className = "task-info";
+    // add HTML content to div
+    // textContent only accepts text values, here it would display html tags too
+    // innerHTML reads the tags value and text values 
+    taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskNameInput + "</h3><span class='task-type'>" + taskTypeInput + "</span>";
+    // more explaination 4.2.6
+    listItemEl.appendChild(taskInfoEl);
     // giving the list item text of this is a new task
-    listItemEl.textContent = "This is a new task.";
+    // listItemEl.textContent = taskNameInput;
     // to attach the task item as a child to the list
     tasksToDoEl.appendChild(listItemEl);
 };
@@ -44,3 +58,5 @@ var createTaskHandler = function(event) {
 formEl.addEventListener("submit", createTaskHandler);
 
 // event.preventdefault() prevents the page from refreshing when a button is clicked. 
+// The common verb that's used for retrieving or reading data from an object's property is getting. 
+// When we provide and store data in an object's property, it's called setting. These two terms are used often in web development.
