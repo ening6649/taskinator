@@ -7,7 +7,8 @@
 
 // give each new task a unique id by counting tasks
 var taskIdCounter = 0;
-
+// an empty array to store future tasks 
+var tasks = [];
 // assign the button element object representation to a variable in the file
 // the EL suffix identifies this as a dom element. camelCase marks the element as a java variable
 // var buttonEl = document.querySelector("#save-task");
@@ -57,7 +58,8 @@ var taskFormHandler = function(event) {
         // package up data as an object
         var taskDataObj = {
             name: taskNameInput,
-            type: taskTypeInput
+            type: taskTypeInput,
+            status:"to do"
         };
          // send it as an argument to createTaskEl
         createTaskEl(taskDataObj);
@@ -84,6 +86,12 @@ var taskStatusChangeHandler = function(event) {
     tasksCompletedEl.appendChild(taskSelected);
   }
 
+  // update task's in tasks array
+  for (var i = 0; i < tasks.length; i++) {
+    if (tasks[i].id === parseInt(taskId)) {
+      tasks[i].status = statusValue;
+    }
+  }
 };
 
 var completeEditTask = function(taskName, taskType, taskId) {
@@ -93,6 +101,13 @@ var completeEditTask = function(taskName, taskType, taskId) {
     // set new values
     taskSelected.querySelector("h3.task-name").textContent = taskName;
     taskSelected.querySelector("span.task-type").textContent = taskType;
+    // loop through tasks array and task object with new content
+    for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === parseInt(taskId)) {
+            tasks[i].name = taskName;
+            tasks[i].type = taskType;
+        }
+    };
 
     alert("Task Updated!");
     // reset the form by removing the task id and changing the button text back to normal 
@@ -136,6 +151,10 @@ var createTaskEl = function (taskDataObj) {
     taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
 
     listItemEl.appendChild(taskInfoEl);
+    // below add id value in the taskIdCounter as a property to the taskdataobj arguement 
+    // and add the entire object to the tasks array 
+    taskDataObj.id = taskIdCounter;
+    tasks.push (taskDataObj);
 
     // use taskIdCounter as the argument to create buttons that corresponds to the current task id
     // createTaskAction() returns a DOM element , we store it in taskActionsEl
@@ -247,8 +266,20 @@ var deleteTask = function(taskId) {
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
     console.log(taskSelected);
     taskSelected.remove();
-    
-  };
+    // create new array to hold updated list of tasks
+    var updatedTaskArr = [];
+
+    // loop through current tasks
+    for (var i = 0; i < tasks.length; i++) {
+    // if tasks[i].id doesn't match the value of taskId, let's keep that task and push it into the new array
+        if (tasks[i].id !== parseInt(taskId)) {
+            updatedTaskArr.push(tasks[i]);
+        }
+    }
+
+    // reassign tasks array to be the same as updatedTaskArr
+    tasks = updatedTaskArr;
+};
 // the createtakehandler should be before the below because we d be calling the function
 // before we defined it
 // the function below use TaskfromHandler as the callback function
