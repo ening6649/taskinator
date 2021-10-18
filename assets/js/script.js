@@ -92,6 +92,7 @@ var taskStatusChangeHandler = function(event) {
       tasks[i].status = statusValue;
     }
   }
+  saveTasks();
 };
 
 var completeEditTask = function(taskName, taskType, taskId) {
@@ -108,6 +109,7 @@ var completeEditTask = function(taskName, taskType, taskId) {
             tasks[i].type = taskType;
         }
     };
+    saveTasks();
 
     alert("Task Updated!");
     // reset the form by removing the task id and changing the button text back to normal 
@@ -155,6 +157,7 @@ var createTaskEl = function (taskDataObj) {
     // and add the entire object to the tasks array 
     taskDataObj.id = taskIdCounter;
     tasks.push (taskDataObj);
+    saveTasks();
 
     // use taskIdCounter as the argument to create buttons that corresponds to the current task id
     // createTaskAction() returns a DOM element , we store it in taskActionsEl
@@ -279,7 +282,14 @@ var deleteTask = function(taskId) {
 
     // reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr;
+    saveTasks();
 };
+
+var saveTasks = function() {
+    // localStorage can only store strings . stringfy convers other type of date into strings
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
 // the createtakehandler should be before the below because we d be calling the function
 // before we defined it
 // the function below use TaskfromHandler as the callback function
