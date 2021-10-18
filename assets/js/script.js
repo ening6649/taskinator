@@ -290,6 +290,22 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+var loadTasks = function() {
+    var savedTasks = localStorage.getItem("tasks");
+  
+    if (!savedTasks) {
+      return false;
+    }
+  
+    savedTasks = JSON.parse(savedTasks);
+    // loop through savedTasks array
+    for (var i = 0; i < savedTasks.length; i++) {
+    // pass each task object into the `createTaskEl()` function
+        createTaskEl(savedTasks[i]);
+    }
+}
+
+
 // the createtakehandler should be before the below because we d be calling the function
 // before we defined it
 // the function below use TaskfromHandler as the callback function
@@ -303,3 +319,5 @@ pageContentEl.addEventListener("change", taskStatusChangeHandler);
 // event.preventdefault() prevents the page from refreshing when a button is clicked. 
 // The common verb that's used for retrieving or reading data from an object's property is getting. 
 // When we provide and store data in an object's property, it's called setting. These two terms are used often in web development.
+
+loadTasks();
